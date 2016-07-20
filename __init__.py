@@ -13,14 +13,16 @@ __all__ = [
     'randint',
     'randrange',
     'choice',
-    # Self defined functions
-    'printf',
-    'print_oi',
+    # Input / Output related functions
     'freopen',
     'fclose',
-    'reseed',
+    'printf',
+    'print_oi',
+    # Random functions
     'randlist',
     'randlist2d',
+    'reseed',
+    # Classes
     'UnionFindSet',
     'Graph',
     'Tree'
@@ -79,13 +81,11 @@ def print_oi(arg):
                 printf('%s ' % i)
             printf('\n')
     elif type(arg) == Graph:
-        printf('%d %d\n' % (arg.n, arg.m))
         for ed in arg.get_edges():
             printf('%d %d ' % (ed.u, ed.v))
             if ed.len: printf('%s ' % ed.len)
             printf('\n')
     elif type(arg) == Tree:
-        printf('%d\n' % (arg.n))
         for ed in arg.get_edges():
             printf('%d %d ' % (ed.u, ed.v))
             if ed.len: printf('%s ' % ed.len)
@@ -100,6 +100,7 @@ def freopen(path):
     output has not yet implemented. This would require fclose()ing
     the handle, and it would be reset to stdout.
     """
+    global opt_stdout_handle
     if type(opt_stdout_handle) == file:
         opt_stdout_handle.close()
     opt_stdout_handle = open(path, 'w')
@@ -114,8 +115,10 @@ def fclose():
         >>> printf('Hello, world!')
         >>> fclose()
     """
-    opt_stdout_handle.close()
-    opt_stdout_handle = sys.stdout
+    global opt_stdout_handle
+    if opt_stdout_handle != sys.stdout:
+        opt_stdout_handle.close()
+        opt_stdout_handle = sys.stdout
     return
 
 def reseed(val):
@@ -139,7 +142,7 @@ def reseed(val):
     seed(val)
     return
 
-def randlist(sz, rnge):
+def randlist(sz, rnge, **kwargs):
     """This function generates a list of 'sz' items from the given
     range or list / array. The 'rnge' parameter can be specified
     by anything ranging from 'range' to 'list', any which could be
@@ -149,10 +152,20 @@ def randlist(sz, rnge):
         [737, 683, 108, 853, 177, 233]
         >>> randlist(3, ['INSERT', 'DELETE', 'SUM', 'MIN', 'REVERSE', 'REVOLVE'])
         ['REVOLVE', 'SUM', 'REVERSE']
+    When using the 'distinct' attribute, be aware of the size 'sz'. Optimization
+    would be further introduced.
     """
+    distinct = 'distinct' in kwargs and kwargs['distinct']
     res = list()
+    # Should not happen...
+    if distinct and sz > len(rnge):
+        raise AttributeError()
     for i in range(0, sz):
-        res.append(choice(rnge))
+        apnd = choice(rnge)
+        if distinct:
+            while apnd in res:
+                apnd = choice(rnge)
+        res.append(apnd)
     return res
 
 def randlist2d(row, column, rnge):
@@ -223,7 +236,6 @@ class Graph:
         >>> from pydatagen import *
         >>> g = Graph(6, 12, connected=True, weighed=True, weight_range=range(10, 99))
         >>> print_oi(g)
-        6 12
         2 3 62
         3 1 43
         6 2 70
@@ -247,7 +259,7 @@ class Graph:
         for i in range(1, self.n):
             while True:
                 p = choice(l_n)
-                q = randrange(1, self.n + 1)
+                q = choice(range(1, self.n + 1) if not l_y else l_y)
                 if not idx.together(p, q) and p != q:
                     break
                 continue
@@ -269,12 +281,13 @@ class Graph:
                 q = randrange(1, self.n + 1)
                 proper = (p != q)
                 for ed in self.edges:
-                    if ed.u == p and ed.v == q:
-                        proper = False
-                        break
-                    if ed.v == p and ed.u == q:
-                        proper = False
-                        break
+                    if not self.indistinct:
+                        if ed.u == p and ed.v == q:
+                            proper = False
+                            break
+                        if ed.v == p and ed.u == q:
+                            proper = False
+                            break
                 if not proper: continue
                 break
             ed = Edge(p, q, choice(self.weight_range)) if self.weighed else Edge(p, q)
@@ -285,9 +298,12 @@ class Graph:
         self.weighed = 'weighed' in kwargs and kwargs['weighed']
         if self.weighed:
             self.weight_range = kwargs['weight_range'] or None
+        self.indistinct = 'indistinct' in kwargs and kwargs['indistinct']
         self.edges = list()
         self.n = n
         self.m = m
+        if not self.indistinct and 2 * self.m > self.n * (self.n - 1):
+            raise AttributeError()
         if self.connected:
             # This would ignore the 'istree' parameter.
             self.__try_make_tree()
@@ -308,7 +324,6 @@ class Tree:
         >>> from pydatagen import *
         >>> t = Tree(18, maxchildren=3, weighed=True,weight_range=range(10, 99))
         >>> print_oi(t)
-        18
         1 12 77
         1 15 84
         1 3 31
