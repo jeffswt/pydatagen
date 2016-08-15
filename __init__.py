@@ -13,16 +13,17 @@ __all__ = [
     'randint',
     'randrange',
     'choice',
-    # Input / Output related functions
-    'freopen',
-    'fclose',
+    # Outputting functions
     'printf',
     'print_oi',
-    # Random functions
+    'freopen',
+    'fclose',
+    # Self-defined randoming functions
+    'possibility',
+    'reseed',
     'randlist',
     'randlist2d',
-    'reseed',
-    # Classes
+    # Self-defined classes
     'UnionFindSet',
     'Graph',
     'Tree'
@@ -81,11 +82,13 @@ def print_oi(arg):
                 printf('%s ' % i)
             printf('\n')
     elif type(arg) == Graph:
+        printf('%d %d\n' % (arg.n, arg.m))
         for ed in arg.get_edges():
             printf('%d %d ' % (ed.u, ed.v))
             if ed.len: printf('%s ' % ed.len)
             printf('\n')
     elif type(arg) == Tree:
+        printf('%d\n' % (arg.n))
         for ed in arg.get_edges():
             printf('%d %d ' % (ed.u, ed.v))
             if ed.len: printf('%s ' % ed.len)
@@ -100,7 +103,6 @@ def freopen(path):
     output has not yet implemented. This would require fclose()ing
     the handle, and it would be reset to stdout.
     """
-    global opt_stdout_handle
     if type(opt_stdout_handle) == file:
         opt_stdout_handle.close()
     opt_stdout_handle = open(path, 'w')
@@ -115,10 +117,8 @@ def fclose():
         >>> printf('Hello, world!')
         >>> fclose()
     """
-    global opt_stdout_handle
-    if opt_stdout_handle != sys.stdout:
-        opt_stdout_handle.close()
-        opt_stdout_handle = sys.stdout
+    opt_stdout_handle.close()
+    opt_stdout_handle = sys.stdout
     return
 
 def reseed(val):
@@ -142,6 +142,32 @@ def reseed(val):
     seed(val)
     return
 
+def possibility(rate):
+    """This function always returns a boolean value, which indicates to be
+    successful or not. The rate should be a real number that ranges between
+    0 and 1, specifying the possibility of this action. The procedure would
+    randomly choose a possibility between this range and amortizedly, in a
+    specified range of rate.
+        >>> from pydatagen import *
+        >>> possibility(0.5)
+        True
+        >>> possibility(0.5)
+        False
+    """
+    if rate < 0 or rate > 1:
+        return False
+    # A valid input
+    if rate == 0:
+        return False
+    if rate == 1:
+        return True
+    # Previously were definite invocations.
+    p = choice(range(0, 1000000)) % 1000 + 1
+    q = int(rate * 1000)
+    if p <= q:
+        return True
+    return False
+
 def randlist(sz, rnge, **kwargs):
     """This function generates a list of 'sz' items from the given
     range or list / array. The 'rnge' parameter can be specified
@@ -152,20 +178,56 @@ def randlist(sz, rnge, **kwargs):
         [737, 683, 108, 853, 177, 233]
         >>> randlist(3, ['INSERT', 'DELETE', 'SUM', 'MIN', 'REVERSE', 'REVOLVE'])
         ['REVOLVE', 'SUM', 'REVERSE']
-    When using the 'distinct' attribute, be aware of the size 'sz'. Optimization
-    would be further introduced.
     """
-    distinct = 'distinct' in kwargs and kwargs['distinct']
     res = list()
-    # Should not happen...
-    if distinct and sz > len(rnge):
-        raise AttributeError()
-    for i in range(0, sz):
-        apnd = choice(rnge)
-        if distinct:
-            while apnd in res:
-                apnd = choice(rnge)
-        res.append(apnd)
+    distinct = 'distinct' in kwargs and kwargs['distinct']
+    if distinct:
+        if len(rnge) > 1.2 * sz:
+            dres = dict()
+            for i in range(0, sz):
+                p = choice(rnge)
+                while p in dres:
+                    p = choice(rnge)
+                res.append(p)
+                dres[p] = True
+            dres = None
+        else:
+            unused = list()
+            used = dict()
+            tres = list()
+            for i in range(0, sz):
+                tres.append(choice(rnge))
+            # Sorting out what have been used
+            for i in tres:
+                # Injecting into results
+                if i not in used:
+                    res.append(i)
+                used[i] = True
+            # Stating information about those haven't been used
+            for i in rnge:
+                if i not in used:
+                    unused.append(i)
+            # Appending those emptiness...
+            used = dict() # To increase performance more greatly
+            while len(res) < sz:
+                if len(unused) < 1.6 * len(used) and len(used) > 10:
+                    # It's time to clear up these indices and it's a log(n) activity
+                    unused_new = list()
+                    for i in unused:
+                        if i not in used:
+                            unused_new.append(i)
+                    unused = unused_new
+                    unused_new = None
+                    used = dict() # Clear and make more
+                # It's obvious that it became fast enough...
+                p = choice(unused)
+                while p in used:
+                    p = choice(unused)
+                res.append(p)
+                used[p] = True
+    else:
+        for i in range(0, sz):
+            res.append(choice(rnge))
     return res
 
 def randlist2d(row, column, rnge):
@@ -236,6 +298,7 @@ class Graph:
         >>> from pydatagen import *
         >>> g = Graph(6, 12, connected=True, weighed=True, weight_range=range(10, 99))
         >>> print_oi(g)
+        6 12
         2 3 62
         3 1 43
         6 2 70
@@ -259,7 +322,7 @@ class Graph:
         for i in range(1, self.n):
             while True:
                 p = choice(l_n)
-                q = choice(range(1, self.n + 1) if not l_y else l_y)
+                q = randrange(1, self.n + 1)
                 if not idx.together(p, q) and p != q:
                     break
                 continue
@@ -281,13 +344,12 @@ class Graph:
                 q = randrange(1, self.n + 1)
                 proper = (p != q)
                 for ed in self.edges:
-                    if not self.indistinct:
-                        if ed.u == p and ed.v == q:
-                            proper = False
-                            break
-                        if ed.v == p and ed.u == q:
-                            proper = False
-                            break
+                    if ed.u == p and ed.v == q:
+                        proper = False
+                        break
+                    if ed.v == p and ed.u == q:
+                        proper = False
+                        break
                 if not proper: continue
                 break
             ed = Edge(p, q, choice(self.weight_range)) if self.weighed else Edge(p, q)
@@ -298,12 +360,9 @@ class Graph:
         self.weighed = 'weighed' in kwargs and kwargs['weighed']
         if self.weighed:
             self.weight_range = kwargs['weight_range'] or None
-        self.indistinct = 'indistinct' in kwargs and kwargs['indistinct']
         self.edges = list()
         self.n = n
         self.m = m
-        if not self.indistinct and 2 * self.m > self.n * (self.n - 1):
-            raise AttributeError()
         if self.connected:
             # This would ignore the 'istree' parameter.
             self.__try_make_tree()
@@ -324,6 +383,7 @@ class Tree:
         >>> from pydatagen import *
         >>> t = Tree(18, maxchildren=3, weighed=True,weight_range=range(10, 99))
         >>> print_oi(t)
+        18
         1 12 77
         1 15 84
         1 3 31
