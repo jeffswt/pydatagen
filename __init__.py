@@ -244,7 +244,6 @@ class UnionFindSet:
     and find operations are implemented. Sets may be unioned or
     queried whether two items are in the same set.
     """
-    @classmethod
     def find(self, p):
         if p < 1 or p > self.n:
             raise ValueError()
@@ -252,17 +251,14 @@ class UnionFindSet:
             return p
         self.par[p] = self.find(self.par[p])
         return self.par[p]
-    @classmethod
     def union(self, p, q):
         # Literally join p to q (under q)
         p = self.find(p)
         q = self.find(q)
         self.par[p] = q
         return
-    @classmethod
     def together(self, p, q):
         return self.find(p) == self.find(q)
-    @classmethod
     def __init__(self, n=1):
         self.n = n
         self.par = list()
