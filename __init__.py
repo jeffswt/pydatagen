@@ -154,19 +154,8 @@ def possibility(rate):
         >>> possibility(0.5)
         False
     """
-    if rate < 0 or rate > 1:
-        return False
-    # A valid input
-    if rate == 0:
-        return False
-    if rate == 1:
-        return True
-    # Previously were definite invocations.
-    p = choice(range(0, 1000000)) % 1000 + 1
-    q = int(rate * 1000)
-    if p <= q:
-        return True
-    return False
+    success = random() < rate
+    return success
 
 def randlist(sz, rnge, **kwargs):
     """This function generates a list of 'sz' items from the given
