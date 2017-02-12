@@ -129,6 +129,18 @@ def generator_list(generator, length=1):
         yield res
     return [None,]
 
+def generator_list_dynamic_length(generator, length_generator):
+    """generator_list(generator, length_generator) -- A generator that creates a
+    list of dynamic length and starts index from [1]."""
+    while True:
+        res = [None,]
+        length = next(length_generator)
+        for i in range(0, length):
+            val = next(generator)
+            res.append(val)
+        yield res
+    return [None,]
+
 def generator_list_2d(generator, rows=1, columns=1):
     """generator_list_2d(generator, rows, columns) -- A generator that creates a
     list of said rows and columns and starts index from [1][1]."""
@@ -148,7 +160,7 @@ def generator_string_fixed_length(generator, length=1):
     but yields strings as results. Length is constant."""
     generator_l = generator_list(generator, length)
     while True:
-        ls = ''.join(next(generator_l)[1:])
+        res = ''.join(next(generator_l)[1:])
         yield res
     return ''
 
@@ -156,9 +168,8 @@ def generator_string_dynamic_length(generator, length_generator):
     """generator_string_dynamic_length(generator, length_generator) -- Wraps
     generator_list() but yields strings as results. Length is dynamic, and the
     user is responsible for checking the consistency of generated length."""
+    generator_l = generator_list_dynamic_length(generator, length_generator)
     while True:
-        length = next(length_generator)
-        generator_l = generator_list(generator, length)
         res = ''.join(next(generator_l)[1:])
         yield res
     return ''
