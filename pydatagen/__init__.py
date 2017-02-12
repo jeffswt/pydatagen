@@ -128,3 +128,23 @@ def generator_list_2d(generator, rows=1, columns=1):
         yield res
     return [None,]
 
+def generator_string_fixed_length(generator, length=1):
+    """generator_string_fixed_length(generator, length) -- Wraps generator_list()
+    but yields strings as results. Length is constant."""
+    generator_l = generator_list(generator, length)
+    while True:
+        ls = ''.join(next(generator_l)[1:])
+        yield res
+    return ''
+
+def generator_string_dynamic_length(generator, length_generator):
+    """generator_string_dynamic_length(generator, length_generator) -- Wraps
+    generator_list() but yields strings as results. Length is dynamic, and the
+    user is responsible for checking the consistency of generated length."""
+    while True:
+        length = next(length_generator)
+        generator_l = generator_list(generator, length)
+        res = ''.join(next(generator_l)[1:])
+        yield res
+    return ''
+
