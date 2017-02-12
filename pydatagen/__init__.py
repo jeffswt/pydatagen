@@ -192,3 +192,25 @@ def generator_random(*args):
         while True:
             yield next(gnratr)
         pass
+    # Enforces integer output
+    if vartype == int:
+        # Default to the C++ standard, [0, 65535]
+        if len(args) <= 0:
+            gnratr = generator_range_int(0, 65535)
+        # Default to the OI de-facto standard, [1, ...]
+        elif len(args) == 1:
+            upr_bnd = check_type_int(args[0], 'upper bound')
+            gnratr = generator_range_int(1, upr_bnd)
+        # Generates within closed-interval range
+        elif len(args) == 2:
+            low_bnd = check_type_int(args[0], 'lower bound')
+            upr_bnd = check_type_int(args[1], 'upper bound')
+            gnratr = generator_range_int(low_bnd, upr_bnd)
+        # Generates within created set, which is **probably** intended
+        else:
+            lst = batch_check_type(check_type_int, args, 'set item')
+            gnratr = generator_choice(lst)
+        # Chooses items
+        while True:
+            yield next(gnratr)
+        pass
