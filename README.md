@@ -1,6 +1,8 @@
 
 # pydatagen
 
+  > Create random data easier with pydatagen.
+
 Now you can use Python to generate random data for OI problems, in a really
 Pythonified way!
 
@@ -16,9 +18,9 @@ If you want to print something, simply write:
 printf("%d %d\n", n, m);
 ```
 
-The simple applications are really of no differences with C++ / OI+C.
+The simple applications are really of no differences with C++.
 
-**We are currently working on the port of `scanf`.**
+**We are currently working on the porting of `scanf`.**
 
 ## Random Generator
 
@@ -43,6 +45,33 @@ for i in range(0, 10000000):
 
 Detailed usage of these functions can be referred in the Python interactive
 help console by typing `help('pydatagen.rand')`, had you installed this package.
+
+## Installation
+
+Clone the repository into an empty folder, and execute the following command:
+
+```sh
+pip install setuptools # If you have already installed this before, ignore it
+python setup.py install # Install pydatagen
+```
+
+You can also build your Wheel package by executing the following command:
+
+```sh
+pip install setuptools # If you have already installed this before, ignore it
+pip install wheel # Install bdist_wheel provider
+python setup.py build bdist_wheel # Build .whl package
+```
+
+Alternatively you could download our official release from the releases panel,
+and install the compiled 'wheel' to your computer. After you have downloaded
+the release, you may install it in the command line:
+
+```sh
+pip install ./pydatagen-version-py3-none-any.whl # Referring to the downloaded file
+```
+
+Installation is as fast as creating random data!
 
 ## Pros and Cons
 
