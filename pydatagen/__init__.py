@@ -55,3 +55,7 @@ def check_type_float(val, note):
     """Wraps check_vartype() with floating point numbers"""
     return check_vartype(val, float, note, 'decimal number')
 
+def check_type_int(val, note):
+    """Wraps check_vartype() with integers"""
+    return check_vartype(val, int, note, 'integer')
+
