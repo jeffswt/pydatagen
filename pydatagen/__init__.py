@@ -114,3 +114,17 @@ def generator_list(generator, length=1):
         yield res
     return [None,]
 
+def generator_list_2d(generator, rows=1, columns=1):
+    """generator_list_2d(generator, rows, columns) -- A generator that creates a
+    list of said rows and columns and starts index from [1][1]."""
+    if rows < 1 or columns < 1:
+        raise ValueError('the given table size is either too short or too thin')
+    generator_1d = generator_list(generator, columns)
+    while True:
+        res = [ [None,] * (columns+1), ]
+        for i in range(0, rows):
+            val = next(generator)
+            res.append(val)
+        yield res
+    return [None,]
+
