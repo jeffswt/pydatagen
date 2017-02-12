@@ -288,3 +288,39 @@ def generator_random(*args):
         while True:
             yield next(gnratr)
         pass
+    # The invoker requires a list.
+    elif vartype == list:
+        # Not even a length is given!
+        if len(args[0]) <= 0:
+            raise ValueError('expected array length, candidates: function(list, ...)')
+        # Then we assign the rest to this itself, recursively
+        length = check_type_int(args[0], 'array length')
+        n_args = args[:-1]
+        i_gnratr = generator_random(*n_args)
+        gnratr = generator_list(i_gnratr, length)
+        # Choosing items
+        while True:
+            yield next(gnratr)
+        pass
+    # The invoker requires a 2D matrix
+    elif vartype == (list, list):
+        # No length is given!
+        if len(args[0]) <= 0:
+            raise ValueError('expected matrix size, candidates: function((list, list), ...)')
+        # Then we assign the rest to this itself, recursively
+        rows, cols = args[0]
+        rows = check_type_int(rows, 'matrix rows')
+        cols = check_type_int(cols, 'matrix columns')
+        n_args = args[:-1]
+        i_gnratr = generator_random(*n_args)
+        gnratr = generator_list_2d(i_gnratr, rows, cols)
+        # Choosing items
+        while True:
+            yield next(gnratr)
+        pass
+    # We currently don't support the rest.
+    else:
+        raise ValueError('unsupported type, candidates: function(...)')
+    # Ending, which ought not happen
+    return
+
