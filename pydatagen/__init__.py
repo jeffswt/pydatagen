@@ -67,3 +67,23 @@ def check_type_set(val, note):
     """Wraps check_vartype() with set"""
     return check_vartype(val, set, note, 'set')
 
+def generator_range_int(lower_bound=1, upper_bound=1):
+    """generator_range_int(lower_bound, upper_bound) -- A generator that
+    infinitely chooses a number in the range [lower_bound, upper_bound]"""
+    if upper_bound < lower_bound:
+        raise ValueError('upper bound should not be less than the lower bound')
+    while True:
+        res = int(random.random() * (upper_bound - lower_bound + 1)) + lower_bound
+        yield res
+    return 0
+
+def generator_range_float(lower_bound=0.0, upper_bound=1.0):
+    """generator_range_float(lower_bound, upper_bound) -- A generator that
+    infinitely chooses a number in the range (lower_bound, upper_bound)"""
+    if upper_bound < lower_bound:
+        raise ValueError('upper bound should not be less than the lower bound')
+    while True:
+        res = float(random.random() * (upper_bound - lower_bound) + lower_bound)
+        yield res
+    return 0.0
+
