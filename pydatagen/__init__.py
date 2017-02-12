@@ -236,3 +236,55 @@ def generator_random(*args):
         while True:
             yield next(gnratr)
         pass
+    # Enforces string output
+    elif vartype == str:
+        """Due to the ambiguous nature of this section, variable type ambiguity
+        is not allowed here. Automatic type conversion would not be enabled,
+        which meant."""
+        def convert_charset(input):
+            output = batch_check_type(check_type_str, list(args[0]), 'character set item')
+            return list(set(''.join(output)))
+        # You should at least give me a length?!
+        if len(args) <= 0:
+            raise ValueError('expected string length, candidates: function(str, ...)')
+        # Given a character set but not a length
+        elif len(args) == 1 and type(args[0]) != int:
+            raise ValueError('expected string length, candidates: function(str, ...)')
+        # Given a length but no character set, defaults to the OI habit [a-z]
+        elif len(args) == 1 and type(args[0]) == int:
+            chrset = list('abcdefghijklmnopqrstuvwxyz')
+            minlen = args[0]
+            maxlen = args[0]
+        # Given a character set and a length
+        elif len(args) == 2 and iterable(args[0]) and type(args[1]) == int:
+            chrset = convert_charset(args[0])
+            minlen = args[1]
+            maxlen = args[1]
+        # Given a length range but no character set
+        elif len(args) == 2 and type(args[0]) == int and type(args[1]) == int:
+            chrset = list('abcdefghijklmnopqrstuvwxyz')
+            minlen = args[0]
+            maxlen = args[1]
+            if minlen > maxlen:
+                raise ValueError('expected maximum length longer than minimum length (typo?)')
+        # Given a character set and a length range
+        elif len(args) == 3 and iterable(args[0]) and type(args[1]) == int and type(args[2]) == int:
+            chrset = convert_charset(args[0])
+            minlen = args[1]
+            maxlen = args[2]
+            if minlen > maxlen:
+                raise ValueError('expected maximum length longer than minimum length (typo?)')
+        # Otherwise not understood
+        else:
+            raise ValueError('ambiguous arguments, candidates: function(str, ...)')
+        # Creates generators...
+        chr_gnratr = generator_choice(chrset)
+        if minlen == maxlen:
+            gnratr = generator_string_fixed_length(chr_gnratr, minlen)
+        else:
+            ln_gnratr = generator_range_int(minlen, maxlen)
+            gnratr = generator_string_dynamic_length(chr_gnratr, ln_gnratr)
+        # Chooses items
+        while True:
+            yield next(gnratr)
+        pass
