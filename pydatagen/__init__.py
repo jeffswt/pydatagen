@@ -178,3 +178,17 @@ def generator_random(*args):
     """Dynamically determines which random algorithm to use according to the
     abstracted vartype given by this function. The specific invocation methods
     are listed in the rand() documentation."""
+    # Defaultly integer randomization
+    if len(args) <= 0:
+        args.append(int)
+    vartype = args[0]
+    args = args[:-1]
+    # Choosing from a set, blindly
+    if type(args[0]) != type and (type(args[0]) != tuple or type(args[0][0]) != type):
+        if not iterable(args[0]):
+            raise ValueError('unable to generate set, candidates: function(iterable object)')
+        objset = list(args[0])
+        gnratr = generator_choice(objset)
+        while True:
+            yield next(gnratr)
+        pass
