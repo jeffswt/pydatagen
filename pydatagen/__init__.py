@@ -324,3 +324,68 @@ def generator_random(*args):
     # Ending, which ought not happen
     return
 
+def rand(*args):
+    """An **intelligent** function which determines input type through the
+    input formats dynamically. The results differs through type, theoretically
+    the user is required to provide a type and consequential arguments.
+
+    The documented syntaxes are as following:
+
+    rand():
+        Generates integer among [0, 65535].
+    rand(iterable_object):
+        Selects arbitrary items among "iterable_object".
+        It is required that "iterable_object" is iterable.
+    rand(int):
+        Generates integer among [0, 65535].
+    rand(int, upper_bound):
+        Generates integer among [1, "upper_bound"].
+        It is required that "upper_bound" >= 1.
+    rand(int, lower_bound, upper_bound):
+        Generates integer among ["lower_bound", "upper_bound"].
+        It is required that "upper_bound" >= "lower_bound".
+    rand(int, more_than_3_items_separated_with_commas):
+        Generates integer among the items (more than 3) separated with commas.
+        It is required that they are all integers.
+    rand(float):
+        Generates floating point number among (0.0, 1.0).
+    rand(float, upper_bound):
+        Generates floating point number among (0.0, "upper_bound").
+        It is required that "upper_bound" >= 0.0.
+    rand(float, lower_bound, upper_bound):
+        Generates floating point number among ("lower_bound", "upper_bound").
+        It is required that "upper_bound" >= "lower_bound".
+    rand(float, more_than_3_items_separated_with_commas):
+        Generates floating point number among the items (more than 3) separated
+          with commas.
+        It is required that they are all floating point numbers or integers.
+    rand(str, length):
+        Generates string of length "length" with characters [a-z].
+    rand(str, min_length, max_length):
+        Generates string of length in between "min_length" and "max_length",
+          with characters [a-z].
+        It is required that "max_length" >= "min_length".
+    rand(str, character_set, length):
+        Generates string of length "length" with characters in "character_set".
+        It is required that it is a valid character set.
+    rand(str, character_set, min_length, max_length):
+        Generates string of length in between "min_length" and "max_length",
+          with characters in "character_set".
+        It is required that "max_length" >= "min_length".
+        It is required that it is a valid character set.
+    rand(list, length, ...):
+        Generates a one-dimensional list / array / matrix, with length "length",
+          appending further generators after these two arguments.
+        It should be noted that array indicing starts from [1].
+    rand((list,list), (rows,columns), ...):
+        Generates a two-dimensional list / array / matrix, with "rows" rows and
+          "columns" columns. Further arguments which composes the elements are
+          appended after these two arguments.
+        It should be noted that array indicing starts from [1][1] ([row][col]).
+
+    The syntax should not be too hard, but easy to understand because of the
+    simple nature of this function."""
+    gnratr = generator_random(*args)
+    while True:
+        yield next(gnratr)
+    return
