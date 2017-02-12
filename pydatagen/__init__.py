@@ -59,3 +59,7 @@ def check_type_int(val, note):
     """Wraps check_vartype() with integers"""
     return check_vartype(val, int, note, 'integer')
 
+def check_type_str(val, note):
+    """Wraps check_vartype() with strings"""
+    return check_vartype(val, str, note, 'string')
+
