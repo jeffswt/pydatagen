@@ -101,3 +101,16 @@ def generator_choice(objset=set()):
         yield objset[pos]
     return objset[0]
 
+def generator_list(generator, length=1):
+    """generator_list(generator, length) -- A generator that creates a list of
+    length and starts index from [1]."""
+    if length < 1:
+        raise ValueError('length should not be too short')
+    while True:
+        res = [None,]
+        for i in range(0, length):
+            val = next(generator)
+            res.append(val)
+        yield res
+    return [None,]
+
