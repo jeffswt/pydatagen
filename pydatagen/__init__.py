@@ -51,3 +51,7 @@ def check_vartype(val, vartype, note, varnote):
         raise ValueError('%s should be a %s' % (note, varnote))
     return val
 
+def check_type_float(val, note):
+    """Wraps check_vartype() with floating point numbers"""
+    return check_vartype(val, float, note, 'decimal number')
+
