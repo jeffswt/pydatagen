@@ -174,3 +174,7 @@ def generator_string_dynamic_length(generator, length_generator):
         yield res
     return ''
 
+def generator_random(*args):
+    """Dynamically determines which random algorithm to use according to the
+    abstracted vartype given by this function. The specific invocation methods
+    are listed in the rand() documentation."""
