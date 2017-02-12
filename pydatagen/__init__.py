@@ -67,6 +67,15 @@ def check_type_set(val, note):
     """Wraps check_vartype() with set"""
     return check_vartype(val, set, note, 'set')
 
+def batch_check_type(func, lst, note):
+    """Wraps func for checking each item in list"""
+    if type(lst) != list:
+        raise ValueError('should provide a list for this check')
+    res = []
+    for i in lst:
+        res.append(func(i, note))
+    return res
+
 def generator_range_int(lower_bound=1, upper_bound=1):
     """generator_range_int(lower_bound, upper_bound) -- A generator that
     infinitely chooses a number in the range [lower_bound, upper_bound]"""
