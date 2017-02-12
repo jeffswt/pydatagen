@@ -214,3 +214,25 @@ def generator_random(*args):
         while True:
             yield next(gnratr)
         pass
+    # Enforces floating point output
+    elif vartype == float:
+        # Default to the Python standard (0.0, 1.0), which looks all right.
+        if len(args) <= 0:
+            gnratr = generator_range_float(0.0, 1.0)
+        # Generates with nativeness, defaults to (0.0, ...)
+        elif len(args) == 1:
+            upr_bnd = check_type_float(args[0], 'upper bound')
+            gnratr = generator_range_int(0.0, upr_bnd)
+        # Generates within open-interval range
+        elif len(args) == 2:
+            low_bnd = check_type_float(args[0], 'lower bound')
+            upr_bnd = check_type_float(args[1], 'upper bound')
+            gnratr = generator_range_int(low_bnd, upr_bnd)
+        # Generates within created set, which is **probably** intended
+        else:
+            lst = batch_check_type(check_type_float, args, 'set item')
+            gnratr = generator_choice(lst)
+        # Chooses items
+        while True:
+            yield next(gnratr)
+        pass
