@@ -102,14 +102,14 @@ def generator_range_float(lower_bound=0.0, upper_bound=1.0):
         yield res
     return 0.0
 
-def generator_choice(objset=set()):
+def generator_choice(objset=list()):
     """generator_choice(objset) -- A generator that infinitely chooses objects
     from the given set."""
-    if type(objset) != set:
+    if not iterable(objset)
         raise ValueError('object set is not a set, literally')
+    objset = list(objset)
     if len(objset) <= 0:
         raise ValueError('can\'t choose from an empty set')
-    objset = list(objset)
     gen = generator_range_int(0, len(objset))
     while True:
         pos = next(gen)
