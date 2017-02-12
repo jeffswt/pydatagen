@@ -63,3 +63,7 @@ def check_type_str(val, note):
     """Wraps check_vartype() with strings"""
     return check_vartype(val, str, note, 'string')
 
+def check_type_set(val, note):
+    """Wraps check_vartype() with set"""
+    return check_vartype(val, set, note, 'set')
+
