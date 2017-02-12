@@ -76,6 +76,12 @@ def batch_check_type(func, lst, note):
         res.append(func(i, note))
     return res
 
+def iterable(object):
+    """Returns if object is iterable."""
+    return hasattr(object, '__iter__')
+
+################################################################################
+
 def generator_range_int(lower_bound=1, upper_bound=1):
     """generator_range_int(lower_bound, upper_bound) -- A generator that
     infinitely chooses a number in the range [lower_bound, upper_bound]"""
