@@ -8,29 +8,26 @@ data in the most understood way and codes in the least bytes as possible, not
 regarding the generation speed.
 """
 
-# __all__ = [
-#     # Imported functions
-#     'randint',
-#     'randrange',
-#     'choice',
-#     # Outputting functions
-#     'printf',
-#     'print_oi',
-#     'freopen',
-#     'fclose',
-#     # Self-defined randoming functions
-#     'possibility',
-#     'reseed',
-#     'randlist',
-#     'randlist2d',
-#     # Self-defined classes
-#     'UnionFindSet',
-#     'Graph',
-#     'Tree'
-# ]
+__all__ = [
+    # Methods
+    'printf',
+    'rand',
+    'xrand',
+    # Classes
+    # 'DisjointSet',
+    # 'Graph',
+    # 'Tree',
+]
 
 import sys
 import random
+
+################################################################################
+
+def printf(fmt_string, *args):
+    print(fmt_string % args, end='')
+
+################################################################################
 
 def check_vartype(val, vartype, note, varnote):
     """ check_vartype(val, vartype, note, varnote): Check if variable val can
@@ -105,12 +102,12 @@ def generator_range_float(lower_bound=0.0, upper_bound=1.0):
 def generator_choice(objset=list()):
     """generator_choice(objset) -- A generator that infinitely chooses objects
     from the given set."""
-    if not iterable(objset)
+    if not iterable(objset):
         raise ValueError('object set is not a set, literally')
     objset = list(objset)
     if len(objset) <= 0:
         raise ValueError('can\'t choose from an empty set')
-    gen = generator_range_int(0, len(objset))
+    gen = generator_range_int(0, len(objset) - 1)
     while True:
         pos = next(gen)
         yield objset[pos]
@@ -150,7 +147,7 @@ def generator_list_2d(generator, rows=1, columns=1):
     while True:
         res = [ [None,] * (columns+1), ]
         for i in range(0, rows):
-            val = next(generator)
+            val = next(generator_1d)
             res.append(val)
         yield res
     return [None,]
@@ -178,11 +175,10 @@ def generator_random(*args):
     """Dynamically determines which random algorithm to use according to the
     abstracted vartype given by this function. The specific invocation methods
     are listed in the rand() documentation."""
+    args = list(args)
     # Defaultly integer randomization
     if len(args) <= 0:
         args.append(int)
-    vartype = args[0]
-    args = args[:-1]
     # Choosing from a set, blindly
     if type(args[0]) != type and (type(args[0]) != tuple or type(args[0][0]) != type):
         if not iterable(args[0]):
@@ -192,6 +188,8 @@ def generator_random(*args):
         while True:
             yield next(gnratr)
         pass
+    vartype = args[0]
+    args = args[1:]
     # Enforces integer output
     if vartype == int:
         # Default to the C++ standard, [0, 65535]
@@ -222,12 +220,12 @@ def generator_random(*args):
         # Generates with nativeness, defaults to (0.0, ...)
         elif len(args) == 1:
             upr_bnd = check_type_float(args[0], 'upper bound')
-            gnratr = generator_range_int(0.0, upr_bnd)
+            gnratr = generator_range_float(0.0, upr_bnd)
         # Generates within open-interval range
         elif len(args) == 2:
             low_bnd = check_type_float(args[0], 'lower bound')
             upr_bnd = check_type_float(args[1], 'upper bound')
-            gnratr = generator_range_int(low_bnd, upr_bnd)
+            gnratr = generator_range_float(low_bnd, upr_bnd)
         # Generates within created set, which is **probably** intended
         else:
             lst = batch_check_type(check_type_float, args, 'set item')
@@ -291,11 +289,11 @@ def generator_random(*args):
     # The invoker requires a list.
     elif vartype == list:
         # Not even a length is given!
-        if len(args[0]) <= 0:
+        if len(args) <= 0:
             raise ValueError('expected array length, candidates: function(list, ...)')
         # Then we assign the rest to this itself, recursively
         length = check_type_int(args[0], 'array length')
-        n_args = args[:-1]
+        n_args = args[1:]
         i_gnratr = generator_random(*n_args)
         gnratr = generator_list(i_gnratr, length)
         # Choosing items
@@ -311,7 +309,7 @@ def generator_random(*args):
         rows, cols = args[0]
         rows = check_type_int(rows, 'matrix rows')
         cols = check_type_int(cols, 'matrix columns')
-        n_args = args[:-1]
+        n_args = args[1:]
         i_gnratr = generator_random(*n_args)
         gnratr = generator_list_2d(i_gnratr, rows, cols)
         # Choosing items
@@ -384,8 +382,19 @@ def rand(*args):
         It should be noted that array indicing starts from [1][1] ([row][col]).
 
     The syntax should not be too hard, but easy to understand because of the
-    simple nature of this function."""
+    simple nature of this function.
+
+    Performance impact: This function brings about 3x of additional performance
+    loss to general application, when using generators;
+    While using direct invocations (which is strongly disrecommended), this
+    brings about 75x of speed loss. So use xrand() when necessary and call
+    next(generator) for faster random data generation."""
     gnratr = generator_random(*args)
+    return next(gnratr)
+
+def xrand(*args):
+    """Generator wrapper for rand()."""
+    gen = generator_random(*args)
     while True:
-        yield next(gnratr)
+        yield next(gen)
     return
