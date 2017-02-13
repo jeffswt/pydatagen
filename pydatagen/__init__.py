@@ -9,10 +9,13 @@ regarding the generation speed.
 """
 
 __all__ = [
-    # Methods
+    # Exported methods
     'printf',
+    'rep',
+    # Randomization methods
     'rand',
     'xrand',
+    'rate',
     # Classes
     # 'DisjointSet',
     # 'Graph',
@@ -24,13 +27,24 @@ import random
 
 ################################################################################
 
-def printf(fmt_string, *args):
-    print(fmt_string % args, end='')
+def printf(fmt_str, *args):
+    """C++ styled output function. Also automatically formats some particular
+    data types for ease of output."""
+    args = list(args)
+    for i in range(0, len(args)):
+        if type(args[i]) == list:
+            args[i] = ' '.join(map(str, args[i][1:]))
+    print(fmt_str % tuple(args), end='')
+
+def rep(begin, end, step=1):
+    """rep(begin, end, step=1): A wrapper for range which provides easy results
+    that ends at end instead of end - 1."""
+    yield from range(begin, end+1, step)
 
 ################################################################################
 
 def check_vartype(val, vartype, note, varnote):
-    """ check_vartype(val, vartype, note, varnote): Check if variable val can
+    """check_vartype(val, vartype, note, varnote): Check if variable val can
     be converted to vartype, if could, returns the converted value, elsewise
     raises and exception incorporating the note in means of varnote."""
     if type(val) == vartype:
@@ -74,7 +88,7 @@ def batch_check_type(func, lst, note):
     return res
 
 def iterable(object):
-    """Returns if object is iterable."""
+    """iterable(object): Returns if object is iterable."""
     return hasattr(object, '__iter__')
 
 ################################################################################
@@ -172,9 +186,9 @@ def generator_string_dynamic_length(generator, length_generator):
     return ''
 
 def generator_random(*args):
-    """Dynamically determines which random algorithm to use according to the
-    abstracted vartype given by this function. The specific invocation methods
-    are listed in the rand() documentation."""
+    """generator_random(...): Dynamically determines which random algorithm to
+    use according to the abstracted vartype given by this function. The specific
+    invocation methods are listed in the rand() documentation."""
     args = list(args)
     # Defaultly integer randomization
     if len(args) <= 0:
@@ -211,7 +225,9 @@ def generator_random(*args):
         # Chooses items
         while True:
             yield next(gnratr)
-        pass
+        passdef rate(ratio):
+    return random.random() < ratio
+
     # Enforces floating point output
     elif vartype == float:
         # Default to the Python standard (0.0, 1.0), which looks all right.
@@ -323,9 +339,10 @@ def generator_random(*args):
     return
 
 def rand(*args):
-    """An **intelligent** function which determines input type through the
-    input formats dynamically. The results differs through type, theoretically
-    the user is required to provide a type and consequential arguments.
+    """rand(...): An **intelligent** function which determines input type
+    through the input formats dynamically. The results differs through type,
+    theoretically the user is required to provide a type and consequential
+    arguments.
 
     The documented syntaxes are as following:
 
@@ -393,8 +410,12 @@ def rand(*args):
     return next(gnratr)
 
 def xrand(*args):
-    """Generator wrapper for rand()."""
+    """xrand(...): Generator wrapper for rand()."""
     gen = generator_random(*args)
     while True:
         yield next(gen)
     return
+
+def rate(ratio):
+    """rate(ratio): Yield True at a probability of "ratio"."""
+    return random.random() < ratio
