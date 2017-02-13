@@ -199,9 +199,7 @@ def generator_random(*args):
             raise ValueError('unable to generate set, candidates: function(iterable object)')
         objset = list(args[0])
         gnratr = generator_choice(objset)
-        while True:
-            yield next(gnratr)
-        pass
+        yield from gnratr
     vartype = args[0]
     args = args[1:]
     # Enforces integer output
@@ -223,11 +221,7 @@ def generator_random(*args):
             lst = batch_check_type(check_type_int, args, 'set item')
             gnratr = generator_choice(lst)
         # Chooses items
-        while True:
-            yield next(gnratr)
-        passdef rate(ratio):
-    return random.random() < ratio
-
+        yield from gnratr
     # Enforces floating point output
     elif vartype == float:
         # Default to the Python standard (0.0, 1.0), which looks all right.
@@ -247,9 +241,7 @@ def generator_random(*args):
             lst = batch_check_type(check_type_float, args, 'set item')
             gnratr = generator_choice(lst)
         # Chooses items
-        while True:
-            yield next(gnratr)
-        pass
+        yield from gnratr
     # Enforces string output
     elif vartype == str:
         """Due to the ambiguous nature of this section, variable type ambiguity
@@ -299,9 +291,7 @@ def generator_random(*args):
             ln_gnratr = generator_range_int(minlen, maxlen)
             gnratr = generator_string_dynamic_length(chr_gnratr, ln_gnratr)
         # Chooses items
-        while True:
-            yield next(gnratr)
-        pass
+        yield from gnratr
     # The invoker requires a list.
     elif vartype == list:
         # Not even a length is given!
@@ -313,9 +303,7 @@ def generator_random(*args):
         i_gnratr = generator_random(*n_args)
         gnratr = generator_list(i_gnratr, length)
         # Choosing items
-        while True:
-            yield next(gnratr)
-        pass
+        yield from gnratr
     # The invoker requires a 2D matrix
     elif vartype == (list, list):
         # No length is given!
@@ -329,9 +317,7 @@ def generator_random(*args):
         i_gnratr = generator_random(*n_args)
         gnratr = generator_list_2d(i_gnratr, rows, cols)
         # Choosing items
-        while True:
-            yield next(gnratr)
-        pass
+        yield from gnratr
     # We currently don't support the rest.
     else:
         raise ValueError('unsupported type, candidates: function(...)')
@@ -411,10 +397,7 @@ def rand(*args):
 
 def xrand(*args):
     """xrand(...): Generator wrapper for rand()."""
-    gen = generator_random(*args)
-    while True:
-        yield next(gen)
-    return
+    yield from generator_random(*args)
 
 def rate(ratio):
     """rate(ratio): Yield True at a probability of "ratio"."""
