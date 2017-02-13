@@ -22,7 +22,7 @@ __all__ = [
     # 'Tree',
 ]
 
-import sys
+import sysfd865c84930d6fd8144460e7a14e0505a8abf380
 import random
 
 ################################################################################
@@ -200,8 +200,7 @@ def generator_random(*args):
         objset = list(args[0])
         gnratr = generator_choice(objset)
         yield from gnratr
-    vartype = args[0]
-    args = args[1:]
+    vartype, *args = args
     # Enforces integer output
     if vartype == int:
         # Default to the C++ standard, [0, 65535]
