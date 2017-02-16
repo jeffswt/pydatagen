@@ -7,7 +7,7 @@ def readme():
 
 setup(
     name = 'pydatagen',
-    version = '0.1.38',
+    version = '0.1.39',
     description = 'Random data generator library in Python',
     long_description = 'Create random data easier with pydatagen.',
     classifiers = [

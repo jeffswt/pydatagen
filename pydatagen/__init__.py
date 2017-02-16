@@ -317,6 +317,18 @@ def generator_random(*args):
         gnratr = generator_list_2d(i_gnratr, rows, cols)
         # Choosing items
         yield from gnratr
+    # Tuple which starts indexes from 0
+    elif vartype == tuple:
+        # Not even a length is given!
+        if len(args) <= 0:
+            raise ValueError('expected tuple length, candidates: function(tuple, ...)')
+        # Then we assign the rest to this itself, recursively
+        length = check_type_int(args[0], 'tuple length')
+        n_args = [list, length] + args[1:]
+        gnratr = generator_random(*n_args)
+        # Choosing items
+        for i in gnratr:
+            yield tuple(i[1:])
     # We currently don't support the rest.
     else:
         raise ValueError('unsupported type, candidates: function(...)')
@@ -382,7 +394,11 @@ def rand(*args):
           "columns" columns. Further arguments which composes the elements are
           appended after these two arguments.
         It should be noted that array indicing starts from [1][1] ([row][col]).
-
+    rand(tuple, length, ...):
+        Generates a one-dimensional tuple, with length "length", appending
+          further generators after these two arguments.
+        This method uses array indicing from [0], and can be unpacked.
+    
     The syntax should not be too hard, but easy to understand because of the
     simple nature of this function.
 
