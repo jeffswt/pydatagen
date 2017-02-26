@@ -12,14 +12,14 @@ __all__ = [
     # Exported methods
     'printf',
     'rep',
+    # Data structures
+    'deque',
+    'queue',
+    'stack',
     # Randomization methods
     'rand',
     'xrand',
     'rate',
-    # Classes
-    # 'DisjointSet',
-    # 'Graph',
-    # 'Tree',
 ]
 
 import sys
@@ -223,6 +223,30 @@ class queue:
     def clear(self):
         return self.deque_base.clear()
     pass
+
+class stack:
+    def __init__(self):
+        self.deque_base = DequeTemplate()
+        return
+    def push(self, data):
+        return self.deque_base.push_left(data)
+    def top(self):
+        return self.deque_base.get_left()
+    def pop(self):
+        return self.deque_base.pop_left()
+    def get(self):
+        data = self.deque_base.get_right()
+        self.deque_base.pop_right()
+        return data
+    def empty(self):
+        return self.deque_base.is_empty()
+    def size(self):
+        return self.deque_base.get_size()
+    def clear(self):
+        return self.deque_base.clear()
+    pass
+
+################################################################################
 
 def generator_range_int(lower_bound=1, upper_bound=1):
     """generator_range_int(lower_bound, upper_bound) -- A generator that
