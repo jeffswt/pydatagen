@@ -283,14 +283,19 @@ class GraphTemplate:
                 raise ValueError('node id must be an integer')
         self.edges[u].add(ed)
         return
-    def __contains__(self, u_v_pair):
-        if len(u_v_pair) == 2:
-            u, v = u_v_pair
-            data = None
-        elif len(u_v_pair) == 3:
-            u, v, data = u_v_pair
-        else:
-            raise TypeError('__contains__() expected 2 or 3 arguments')
+    def remove_edge(self, u, v, data=None, directed=True):
+        if not directed:
+            self.remove_edge(u, v, data, directed=True)
+            self.remove_edge(v, u, data, directed=True)
+            return
+        if u not in self.edges:
+            return
+        for ed in self.edges[u]:
+            if ed.v == v:
+                if data == None or ed.data == data:
+                    self.edges[u].remove(ed)
+        return
+    def contains(self, u, v, data):
         if u not in self.edges:
             return False
         for ed in self.edges[u]:
