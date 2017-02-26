@@ -170,6 +170,38 @@ class DequeTemplate:
         return
     pass
 
+class deque:
+    def __init__(self):
+        self.deque_base = DequeTemplate()
+        return
+    def push_front(self, data):
+        return self.deque_base.push_left(data)
+    def push_back(self, data):
+        return self.deque_base.push_right(data)
+    def front(self):
+        return self.deque_base.get_left()
+    def back(self):
+        return self.deque_base.get_right()
+    def pop_front(self):
+        return self.deque_base.pop_left()
+    def pop_back(self):
+        return self.deque_base.pop_right()
+    def get_front(self):
+        data = self.deque_base.get_left()
+        self.deque_base.pop_left()
+        return data
+    def get_back(self):
+        data = self.deque_base.get_right()
+        self.deque_base.pop_right()
+        return data
+    def empty(self):
+        return self.deque_base.is_empty()
+    def size(self):
+        return self.deque_base.get_size()
+    def clear(self):
+        return self.deque_base.clear()
+    pass
+
 def generator_range_int(lower_bound=1, upper_bound=1):
     """generator_range_int(lower_bound, upper_bound) -- A generator that
     infinitely chooses a number in the range [lower_bound, upper_bound]"""
