@@ -16,6 +16,7 @@ __all__ = [
     'deque',
     'queue',
     'stack',
+    'graph',
     # Randomization methods
     'rand',
     'xrand',
@@ -266,12 +267,15 @@ class GraphTemplate:
             self.data = data
             return
         def __repr__(self):
-            return '(%s => %s : %s)' % (self.u, self.v, self.data)
+            if not self.data:
+                return '(%s -> %s)' % (repr(self.u), repr(self.v))
+            return '(%s -> %s : %s)' % (repr(self.u), repr(self.v), repr(self.data))
         def __add__(self, value):
             return Edge(u, value.v, self.data + value.data)
         pass
     def __init__(self, n=0):
         self.n = n
+        self.m = 0
         # Exception handling
         if type(n) != int or n < 0:
             raise ValueError('invalid number of nodes')
@@ -296,6 +300,7 @@ class GraphTemplate:
             if type(u) != int or u < 0 or u > n or type(v) != int or v < 0 or v > n:
                 raise ValueError('node id must be an integer')
         self.edges[u].add(ed)
+        self.m += 1
         return
     def remove_edge(self, u, v, data=None, directed=True):
         if not directed:
@@ -308,6 +313,8 @@ class GraphTemplate:
             if ed.v == v:
                 if data == None or ed.data == data:
                     self.edges[u].remove(ed)
+                    self.m -= 1
+                    break
         return
     def contains(self, u, v, data):
         if u not in self.edges:
@@ -317,6 +324,9 @@ class GraphTemplate:
                 if data == None or ed.data == data:
                     return True
         return False
+    def size(self):
+        return self.m
+    pass
 
 class graph:
     def __init__(self, n=0):
