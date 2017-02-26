@@ -177,7 +177,7 @@ class deque:
     def __repr__(self):
         if self.deque_base.is_empty():
             return 'deque()'
-        return 'deque(front: %s, back: %s)' % (self.deque_base.get_left(), self.deque_base.get_right())
+        return 'deque(front: %s, back: %s, size: %d)' % (self.deque_base.get_left(), self.deque_base.get_right(), self.deque_base.get_size())
     def push_front(self, data):
         return self.deque_base.push_left(data)
     def push_back(self, data):
@@ -213,7 +213,7 @@ class queue:
     def __repr__(self):
         if self.deque_base.is_empty():
             return 'queue()'
-        return 'queue(front: %s)' % (self.deque_base.get_right(),)
+        return 'queue(front: %s, size: %d)' % (self.deque_base.get_right(), self.deque_base.get_size())
     def push(self, data):
         return self.deque_base.push_left(data)
     def front(self):
@@ -239,7 +239,7 @@ class stack:
     def __repr__(self):
         if self.deque_base.is_empty():
             return 'stack()'
-        return 'stack(top: %s)' % (self.deque_base.get_left(),)
+        return 'stack(top: %s, size: %d)' % (self.deque_base.get_left(), self.deque_base.get_size())
     def push(self, data):
         return self.deque_base.push_left(data)
     def top(self):
