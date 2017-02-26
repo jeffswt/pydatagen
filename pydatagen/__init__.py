@@ -246,6 +246,60 @@ class stack:
         return self.deque_base.clear()
     pass
 
+class GraphTemplate:
+    class Edge:
+        def __init__(self, u, v, data):
+            self.u = u
+            self.v = v
+            self.data = data
+            return
+        def __add__(self, value):
+            return Edge(u, value.v, self.data + value.data)
+        pass
+    def __init__(self, n=0):
+        self.n = n
+        # Exception handling
+        if type(n) != int or n < 0:
+            raise ValueError('invalid number of nodes')
+        # If n = 0 here, then we create the edges and relations dynamically,
+        # instead of creating them statically.
+        if self.n == 0:
+            self.edges = {}
+        else:
+            self.edges = {set()} * (self.n + 1)
+        # Done building (lazily)
+        return
+    def add_edge(self, u, v, data=None, directed=True):
+        if not directed:
+            self.add_edge(u, v, data, directed=True)
+            self.add_edge(v, u, data, directed=True)
+            return
+        ed = self.Edge(u, v, data)
+        if self.n == 0:
+            if u not in self.edges:
+                self.edges[u] = set()
+        else:
+            if type(u) != int or u < 0 or u > n or type(v) != int or v < 0 or v > n:
+                raise ValueError('node id must be an integer')
+        self.edges[u].add(ed)
+        return
+    def __contains__(self, u_v_pair):
+        if len(u_v_pair) == 2:
+            u, v = u_v_pair
+            data = None
+        elif len(u_v_pair) == 3:
+            u, v, data = u_v_pair
+        else:
+            raise TypeError('__contains__() expected 2 or 3 arguments')
+        if u not in self.edges:
+            return False
+        for ed in self.edges[u]:
+            if ed.v == v:
+                if data == None or ed.data == data:
+                    return True
+        return False
+    pass
+
 ################################################################################
 
 def generator_range_int(lower_bound=1, upper_bound=1):
@@ -553,7 +607,7 @@ def rand(*args):
         Generates a one-dimensional tuple, with length "length", appending
           further generators after these two arguments.
         This method uses array indicing from [0], and can be unpacked.
-    
+
     The syntax should not be too hard, but easy to understand because of the
     simple nature of this function.
 
