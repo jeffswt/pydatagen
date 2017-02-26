@@ -317,6 +317,36 @@ class GraphTemplate:
                 if data == None or ed.data == data:
                     return True
         return False
+
+class graph:
+    def __init__(self, n=0):
+        self.graph_temp = GraphTemplate(n)
+        self.edges = self.graph_temp.edges
+        return
+    def __repr__(self):
+        if self.graph_temp.m == 0:
+            return 'graph{}'
+        pool = []
+        for i in self.edges:
+            for j in self.edges[i]:
+                pool.append(repr(j))
+        pool.sort()
+        return 'graph{' + ', '.join(s for s in pool) + '}'
+    def add_edge(self, u, v, data=None, directed=True):
+        return self.graph_temp.add_edge(u, v, data, directed)
+    def remove_edge(self, u, v, data=None, directed=True):
+        return self.graph_temp.remove_edge(u, v, data, directed)
+    def size(self):
+        return self.graph_temp.size()
+    def __contains__(self, u_v_pair):
+        if len(u_v_pair) == 2:
+            u, v = u_v_pair
+            data = None
+        elif len(u_v_pair) == 3:
+            u, v, data = u_v_pair
+        else:
+            raise TypeError('__contains__() expected 2 or 3 arguments')
+        return self.graph_temp.contains(u, v, data)
     pass
 
 ################################################################################
