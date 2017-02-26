@@ -93,6 +93,83 @@ def iterable(object):
 
 ################################################################################
 
+class DequeTemplate:
+    class Element:
+        def __init__(self, data=None):
+            self.data = data
+            self.left = None
+            self.right = None
+        pass
+    def link_element(self, l_element, r_element):
+        l_element.right = r_element
+        r_element.left = l_element
+        return
+    def __init__(self):
+        self.l_elem = None
+        self.r_elem = None
+        self.size = 0
+        return
+    def push_left(self, data):
+        el = self.Element(data)
+        if self.size > 0:
+            self.link_element(el, self.l_elem)
+            self.l_elem = el
+        else:
+            self.l_elem = el
+            self.r_elem = el
+        self.size += 1
+        return
+    def push_right(self, data):
+        el = self.Element(data)
+        if self.size > 0:
+            self.link_element(self.r_elem, el)
+            self.r_elem = el
+        else:
+            self.l_elem = el
+            self.r_elem = el
+        self.size += 1
+        return
+    def get_left(self):
+        if self.size <= 0:
+            raise ValueError('cannot get from empty list')
+        return self.l_elem.data
+    def get_right(self):
+        if self.size <= 0:
+            raise ValueError('cannot get from empty list')
+        return self.r_elem.data
+    def pop_left(self):
+        if self.size <= 0:
+            raise ValueError('cannot pop from empty list')
+        if self.l_elem.right:
+            self.l_elem.right.left = None
+            self.l_elem = self.l_elem.right
+        else:
+            self.l_elem = None
+            self.r_elem = None
+        self.size -= 1
+        return
+    def pop_right(self):
+        if self.size <= 0:
+            raise ValueError('cannot pop from empty list')
+        if self.r_elem.left:
+            self.r_elem.left.right = None
+            self.r_elem = self.r_elem.left
+        else:
+            self.l_elem = None
+            self.r_elem = None
+        self.size -= 1
+        return
+    def is_empty(self):
+        return self.size <= 0
+    def get_size(self):
+        return self.size
+    def clear(self):
+        self.l_elem = None
+        self.r_elem = None
+        self.empty = True
+        return
+    pass
+
 def generator_range_int(lower_bound=1, upper_bound=1):
     """generator_range_int(lower_bound, upper_bound) -- A generator that
     infinitely chooses a number in the range [lower_bound, upper_bound]"""
