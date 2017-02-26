@@ -174,6 +174,10 @@ class deque:
     def __init__(self):
         self.deque_base = DequeTemplate()
         return
+    def __repr__(self):
+        if self.deque_base.is_empty():
+            return 'deque()'
+        return 'deque(front: %s, back: %s)' % (self.deque_base.get_left(), self.deque_base.get_right())
     def push_front(self, data):
         return self.deque_base.push_left(data)
     def push_back(self, data):
@@ -206,6 +210,10 @@ class queue:
     def __init__(self):
         self.deque_base = DequeTemplate()
         return
+    def __repr__(self):
+        if self.deque_base.is_empty():
+            return 'queue()'
+        return 'queue(front: %s)' % (self.deque_base.get_right(),)
     def push(self, data):
         return self.deque_base.push_left(data)
     def front(self):
@@ -228,6 +236,10 @@ class stack:
     def __init__(self):
         self.deque_base = DequeTemplate()
         return
+    def __repr__(self):
+        if self.deque_base.is_empty():
+            return 'stack()'
+        return 'stack(top: %s)' % (self.deque_base.get_left(),)
     def push(self, data):
         return self.deque_base.push_left(data)
     def top(self):
@@ -253,6 +265,8 @@ class GraphTemplate:
             self.v = v
             self.data = data
             return
+        def __repr__(self):
+            return '(%s => %s : %s)' % (self.u, self.v, self.data)
         def __add__(self, value):
             return Edge(u, value.v, self.data + value.data)
         pass
